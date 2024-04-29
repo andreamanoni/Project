@@ -1,0 +1,122 @@
+[gd_scene load_steps=12 format=3 uid="uid://feos0xqyvssg"]
+
+[ext_resource type="Texture2D" uid="uid://jaoh5icxgwwo" path="res://separator.png" id="1_17nui"]
+[ext_resource type="Script" path="res://script/ball.gd" id="2_6duoj"]
+[ext_resource type="Texture2D" uid="uid://dr3pnwn5y03tk" path="res://red_paddle.png" id="3_1p7t7"]
+[ext_resource type="Texture2D" uid="uid://dhtbgous4vydh" path="res://ball.png" id="3_bckel"]
+[ext_resource type="Texture2D" uid="uid://d1dpsv3kq0w5q" path="res://green_paddle.png" id="4_0rai6"]
+[ext_resource type="Script" path="res://script/right_paddle.gd" id="4_h3jqe"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5ne7m"]
+radius = 59.0339
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8ta83"]
+size = Vector2(5.07384, 23.3602)
+
+[sub_resource type="GDScript" id="GDScript_54dq2"]
+script/source = "extends CharacterBody2D
+
+func _physics_process(delta):
+	#Premendo W, il paddle sinistro si muove in alto
+	if Input.is_key_pressed(KEY_W) and position.y>300:
+		position.y -= 25
+	#Premendo S, il paddle sinistro si muove in basso
+	if Input.is_key_pressed(KEY_S) and position.y<5600:
+		position.y += 25
+	
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ixf1k"]
+size = Vector2(2.77057, 1.58808)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ullgq"]
+size = Vector2(368, 5940.5)
+
+[node name="Node2D" type="Node2D"]
+scale = Vector2(0.0851273, 0.0673098)
+metadata/_edit_horizontal_guides_ = [-4819.0, 398.0, 395.0, 1.0]
+metadata/_edit_vertical_guides_ = [-6611.0, 1756.0, 2.0, 956.0]
+
+[node name="line" type="Sprite2D" parent="."]
+position = Vector2(3802.19, 3001.47)
+scale = Vector2(9.997, 14.813)
+texture = ExtResource("1_17nui")
+
+[node name="Camera2D2" type="Camera2D" parent="."]
+offset = Vector2(320, 200)
+
+[node name="ball" type="CharacterBody2D" parent="."]
+position = Vector2(3794.32, 2748.49)
+script = ExtResource("2_6duoj")
+
+[node name="Sprite2D" type="Sprite2D" parent="ball"]
+position = Vector2(3, 66)
+scale = Vector2(11.927, 13.05)
+texture = ExtResource("3_bckel")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ball"]
+position = Vector2(2, 66)
+shape = SubResource("CircleShape2D_5ne7m")
+
+[node name="right_paddle" type="CharacterBody2D" parent="."]
+position = Vector2(6633.19, 2838.47)
+scale = Vector2(20.8915, 22.8594)
+script = ExtResource("4_h3jqe")
+
+[node name="right" type="Sprite2D" parent="right_paddle"]
+position = Vector2(0.750321, -0.686858)
+rotation = -1.5708
+scale = Vector2(0.0187447, 0.0337734)
+texture = ExtResource("3_1p7t7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="right_paddle"]
+shape = SubResource("RectangleShape2D_8ta83")
+
+[node name="left_paddle" type="CharacterBody2D" parent="."]
+position = Vector2(1080.73, 2778.2)
+script = SubResource("GDScript_54dq2")
+
+[node name="left" type="Sprite2D" parent="left_paddle"]
+position = Vector2(10.8265, 14.8556)
+rotation = -1.5708
+scale = Vector2(0.622661, -0.642438)
+texture = ExtResource("4_0rai6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="left_paddle"]
+position = Vector2(11.7471, 14.8567)
+scale = Vector2(35.3312, -339.456)
+shape = SubResource("RectangleShape2D_ixf1k")
+
+[node name="up_wall" type="CharacterBody2D" parent="."]
+position = Vector2(3770.82, -222.85)
+scale = Vector2(0.994, 0.994)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="up_wall"]
+rotation = 1.5708
+scale = Vector2(1.264, 1.264)
+shape = SubResource("RectangleShape2D_ullgq")
+
+[node name="down_wall" type="CharacterBody2D" parent="."]
+position = Vector2(3774.19, 6191.47)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="down_wall"]
+rotation = 1.5708
+scale = Vector2(1.264, 1.264)
+shape = SubResource("RectangleShape2D_ullgq")
+
+[node name="right_wall" type="Area2D" parent="."]
+position = Vector2(7706.11, 2971.34)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="right_wall"]
+shape = SubResource("RectangleShape2D_ullgq")
+
+[node name="left_wall" type="Area2D" parent="."]
+position = Vector2(-201.806, 2972.47)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="left_wall"]
+shape = SubResource("RectangleShape2D_ullgq")
+
+[connection signal="area_entered" from="right_wall" to="ball" method="_on_right_wall_area_entered"]
+[connection signal="body_entered" from="right_wall" to="ball" method="_on_wall_body_entered"]
+[connection signal="area_entered" from="left_wall" to="ball" method="_on_left_wall_area_entered"]
+[connection signal="body_entered" from="left_wall" to="ball" method="_on_wall_body_entered"]
